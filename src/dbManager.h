@@ -11,7 +11,10 @@ class DbManager {
 		~DbManager();
 		bool db_exists();
 		QString db_create();
-		QString get_path();
+		QString db_insert(int table, QString name, QString description, QDateTime timeEnd, QDateTime timeBegin = null);
+		QString db_delete(/*?????*/);
+		QString db_alter(/*??????*/);
+		QString get_path(/*?????*/);
 		void set_path(QString path);
 	private:
 		QString path;
