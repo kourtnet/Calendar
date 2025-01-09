@@ -1,2 +1,2 @@
 # Calendar
-My little calendar project for educational and entertainment ;)
+My little calendar project for education and entertainment ;)
