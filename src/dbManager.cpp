@@ -1,5 +1,5 @@
 #include "dbManager.h"
-#include <iostream>
+
 DbManager::DbManager(QString inputPath){
 	path = inputPath;
 	db = QSqlDatabase::addDatabase("QSQLITE"); 
@@ -22,11 +22,11 @@ QString DbManager::db_create() {
 	} else {
 		QSqlQuery createTablesQuery = QSqlQuery(db);
 		//create tasks table
-		createTablesQuery.exec(CREATE_TASKS_TABLE_QUERY);
-		//create events table
-		bool ls = createTablesQuery.exec(CREATE_EVENTS_TABLE_QUERY);
-		//if ls is false, that means that tables are not created, send error
-		if (!ls) res = createTablesQuery.lastError().text();
+        if(!createTablesQuery.exec(CREATE_TASKS_TABLE_QUERY)) {
+            res = createTablesQuery.lastError().text();
+        } else if (!createTablesQuery.exec(CREATE_EVENTS_TABLE_QUERY)) {
+            res = createTablesQuery.lastError().text();
+        }
 	}
 	return res;
 }
@@ -67,12 +67,12 @@ QString DbManager::db_insert_events(QString name, QString description, QDateTime
 		insertEventsTableQuery.bindValue(1, description);
 		//2 is date_time_begin column
 		insertEventsTableQuery.bindValue(2, date_time_begin.toString("yyyy-MM-dd hh:mm:ss"));
-		//3 is date_time_begin column
+        //3 is date_time_end column
 		insertEventsTableQuery.bindValue(3, date_time_end.toString("yyyy-MM-dd hh:mm:ss"));
 		//exec after binding parameters
-		bool ls = insertEventsTableQuery.exec();
-		//if ls is false, that means that values were not inserted, send error
-		if(!ls) res = insertEventsTableQuery.lastError().text();
+        if(!insertEventsTableQuery.exec()) {
+            res = insertEventsTableQuery.lastError().text();
+        }
 	}
 	return res;
 }
@@ -86,9 +86,10 @@ QString DbManager::db_delete_tasks(int id) {
 		QSqlQuery deleteTasksTableQuery = QSqlQuery(db);
 		deleteTasksTableQuery.prepare(DELETE_TASKS_TABLE_QUERY);
 		deleteTasksTableQuery.bindValue(0, QString::number(id));
-		
-		bool ls = deleteTasksTableQuery.exec();
-		if(!ls) res = deleteTasksTableQuery.lastError().text();
+
+        if(!deleteTasksTableQuery.exec()) {
+            res = deleteTasksTableQuery.lastError().text();
+        }
 	}
 	return res;
 }
@@ -103,8 +104,9 @@ QString DbManager::db_delete_events(int id) {
 		deleteEventsTableQuery.prepare(DELETE_EVENTS_TABLE_QUERY);
 		deleteEventsTableQuery.bindValue(0, QString::number(id));
 		
-		bool ls = deleteEventsTableQuery.exec();
-		if(!ls) res = deleteEventsTableQuery.lastError().text();
+        if(!deleteEventsTableQuery.exec()) {
+            res = deleteEventsTableQuery.lastError().text();
+        }
 	}
 	return res;
 }
@@ -122,7 +124,7 @@ QString DbManager::db_update_tasks(int id, QString name, QString description, QD
 			updateTasksTableQuery.prepare(UPDATE_NAME_TASKS_TABLE_QUERY);
 			updateTasksTableQuery.bindValue(0, name);
 			updateTasksTableQuery.bindValue(1, id);
-			ls = updateTasksTableQuery.exec();
+            ls = updateTasksTableQuery.exec();
 		}
 		if(description != QString() && ls) {
 			updateTasksTableQuery = QSqlQuery(db);
