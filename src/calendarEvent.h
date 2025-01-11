@@ -26,5 +26,5 @@ class CalendarEvent{
         //is task completed
         QDateTime dateTimeEnd;
 };
-
+//
 #endif
