@@ -20,8 +20,15 @@
 #define UPDATE_DATE_TIME_BEGIN_EVENTS_TABLE_QUERY "UPDATE events SET date_time_begin=datetime(?) WHERE id=?"
 #define UPDATE_DATE_TIME_END_EVENTS_TABLE_QUERY "UPDATE events SET date_time_end=datetime(?) WHERE id=?"
 
+#define SELECT_ALL_TASKS_TABLE_QUERY "SELECT * FROM TASKS ORDER BY id"
+#define SELECT_ALL_EVENTS_TABLE_QUERY "SELECT * FROM EVENTS ORDER BY id"
+
 #include <QtSql>
 #include <QFile>
+#include <QList>
+
+#include "calendarTask.h"
+#include "calendarEvent.h"
 
 class DbManager {
 	public:
@@ -40,7 +47,10 @@ class DbManager {
 		//update query methods
         bool db_update_tasks(QString &err, int id, QString name = QString(), QString description = QString(), QDateTime deadline = QDateTime());
         bool db_update_events(QString &err, int id, QString name = QString(), QString description = QString(), QDateTime date_time_begin = QDateTime(), QDateTime date_time_end = QDateTime());
-		
+        //select all query methods for test purposes
+        bool db_select_all_tasks(QString &err, QList<CalendarTask> &listOfTasks);
+        bool db_select_all_events(QString &err, QList<CalendarEvent> &listOfEvents);
+
 		QString get_path();
 		void set_path(QString path);
 

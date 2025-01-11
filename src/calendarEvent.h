@@ -6,17 +6,21 @@
 
 class CalendarEvent{
 	public:
-        CalendarEvent(QString inputName, QString inputDescription, QDateTime inputDateTimeBegin, QDateTime inputDateTimeEnd);
+        CalendarEvent(int inputId, QString inputName, QString inputDescription, QDateTime inputDateTimeBegin, QDateTime inputDateTimeEnd);
         ~CalendarEvent();
+        int get_id();
         QString get_name();
         QString get_description();
         QDateTime get_date_time_begin();
         QDateTime get_date_time_end();
+        void set_id(int inputId);
         void set_name(QString inputName);
         void set_description(QString inputDescription);
         void set_date_time_begin(QDateTime inputDateTimeBegin);
         void set_date_time_end(QDateTime inputDateTimeEnd);
+
 	protected:
+        int id;
         //name of entity
         QString name;
         //description of entity

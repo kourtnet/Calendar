@@ -34,7 +34,7 @@ bool DbManager::db_create(QString &err) {
     return true;
 }
 
-bool DbManager::db_insert_tasks(QString &err, QString name, QString description, QDateTime deadline) {
+bool DbManager::db_insert_tasks(QString &err, QString name, QString description, QDateTime begin) {
 	//send error if couldnt open for some reason, else insert into table
 	if (!db.open()) {
         err = db.lastError().text();
@@ -47,7 +47,7 @@ bool DbManager::db_insert_tasks(QString &err, QString name, QString description,
 		//1 is description column
 		insertTasksTableQuery.bindValue(1, description);
 		//2 is deadline column
-		insertTasksTableQuery.bindValue(2, deadline.toString("yyyy-MM-dd hh:mm:ss"));
+        insertTasksTableQuery.bindValue(2, begin.toString("yyyy-MM-dd hh:mm:ss"));
 		//exec after binding parameters
         //if ls is false, that means that values were not inserted, send error
         if(!insertTasksTableQuery.exec()) {
@@ -211,6 +211,42 @@ bool DbManager::db_update_events(QString &err, int id, QString name, QString des
     return true;
 }
 
+bool DbManager::db_select_all_tasks(QString &err, QList<CalendarTask> &listOfTasks) {
+    if(!db.open()) {
+        err = db.lastError().text();
+        return false;
+    } else {
+        QSqlQuery selectTasksTableQuery = QSqlQuery(db);
+        selectTasksTableQuery.prepare(SELECT_ALL_TASKS_TABLE_QUERY);
+        if(!selectTasksTableQuery.exec()) {
+            err = selectTasksTableQuery.lastError().text();
+            return false;
+        } else {
+            while(selectTasksTableQuery.next()) {
+                listOfTasks.append(CalendarTask(selectTasksTableQuery.value(0).toInt(), selectTasksTableQuery.value(1).toString(), selectTasksTableQuery.value(2).toString(), selectTasksTableQuery.value(3).toDateTime()));
+            }
+        }
+    }
+    return true;
+}
+bool DbManager::db_select_all_events(QString &err, QList<CalendarEvent> &listOfEvents) {
+    if(!db.open()) {
+        err = db.lastError().text();
+        return false;
+    } else {
+        QSqlQuery selectEventsTableQuery = QSqlQuery(db);
+        selectEventsTableQuery.prepare(SELECT_ALL_EVENTS_TABLE_QUERY);
+        if(!selectEventsTableQuery.exec()) {
+            err = selectEventsTableQuery.lastError().text();
+            return false;
+        } else {
+            while(selectEventsTableQuery.next()) {
+                listOfEvents.append(CalendarEvent(selectEventsTableQuery.value(0).toInt(), selectEventsTableQuery.value(1).toString(), selectEventsTableQuery.value(2).toString(), selectEventsTableQuery.value(3).toDateTime(), selectEventsTableQuery.value(4).toDateTime()));
+            }
+        }
+    }
+    return true;
+}
 
 QString DbManager::get_path(){
 	return path;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>nameEventLineEdit</class>
- <widget class="QMainWindow" name="nameEventLineEdit">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,16 +14,6 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListView" name="tasksList">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>401</width>
-      <height>192</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="tasksLabel">
     <property name="geometry">
      <rect>
@@ -58,16 +48,6 @@
     </property>
     <property name="text">
      <string>Events</string>
-    </property>
-   </widget>
-   <widget class="QListView" name="eventsList">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>40</y>
-      <width>401</width>
-      <height>192</height>
-     </rect>
     </property>
    </widget>
    <widget class="QLabel" name="addTaskLabel">
@@ -106,7 +86,7 @@
      <string>Add event</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="nameTaskLineEdit">
+   <widget class="QLineEdit" name="addNameTaskLineEdit">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -116,7 +96,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="nameEventlineEdit">
+   <widget class="QLineEdit" name="addNameEventlineEdit">
     <property name="geometry">
      <rect>
       <x>300</x>
@@ -180,7 +160,7 @@
      <string>description</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="descriptionTaskLineEdit">
+   <widget class="QLineEdit" name="addDescriptionTaskLineEdit">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -208,7 +188,7 @@
      <string>description</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="descriptionEventLineEdit">
+   <widget class="QLineEdit" name="addDescriptionEventLineEdit">
     <property name="geometry">
      <rect>
       <x>300</x>
@@ -236,16 +216,6 @@
      <string>begin</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="beginTaskLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>420</y>
-      <width>261</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="beginEventLabel">
     <property name="geometry">
      <rect>
@@ -262,26 +232,6 @@
     </property>
     <property name="text">
      <string>begin</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="beginEventLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>420</y>
-      <width>261</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="endEventLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>480</y>
-      <width>261</width>
-      <height>24</height>
-     </rect>
     </property>
    </widget>
    <widget class="QLabel" name="endEventLabel">
@@ -364,26 +314,6 @@
      <string>begin</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="editBeginEventLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>880</x>
-      <y>420</y>
-      <width>261</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="editEndEventLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>880</x>
-      <y>480</y>
-      <width>261</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="editBeginEventLabel">
     <property name="geometry">
      <rect>
@@ -433,16 +363,6 @@
      <string>Edit Task</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="editBeginTaskLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>590</x>
-      <y>420</y>
-      <width>261</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="editNameTaskLabel">
     <property name="geometry">
      <rect>
@@ -461,7 +381,7 @@
      <string>name</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="nameTaskLineEdit_2">
+   <widget class="QLineEdit" name="editNameTaskLineEdit">
     <property name="geometry">
      <rect>
       <x>590</x>
@@ -489,7 +409,7 @@
      <string>Edit task</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="nameEventlineEdit_2">
+   <widget class="QLineEdit" name="editNameEventlineEdit">
     <property name="geometry">
      <rect>
       <x>880</x>
@@ -586,17 +506,110 @@
      <string>Edit Event</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="deleteButton">
+   <widget class="QPushButton" name="deleteTaskButton">
     <property name="geometry">
      <rect>
       <x>880</x>
-      <y>110</y>
+      <y>90</y>
       <width>261</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>Delete </string>
+     <string>Delete Task</string>
+    </property>
+   </widget>
+   <widget class="QDateTimeEdit" name="beginTaskDateEdit">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>420</y>
+      <width>261</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QDateTimeEdit" name="addBeginEventDateEdit">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>420</y>
+      <width>261</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QDateTimeEdit" name="editBeginTaskDateEdit">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>420</y>
+      <width>261</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QDateTimeEdit" name="addEndEventDateEdit">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>480</y>
+      <width>261</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QDateTimeEdit" name="editBeginEventDateEdit">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>420</y>
+      <width>261</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QDateTimeEdit" name="editEndEventDateEdit">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>480</y>
+      <width>261</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="tasksList">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>411</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="eventsList">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>40</y>
+      <width>411</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="deleteEventButton">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>140</y>
+      <width>261</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Delete Event</string>
     </property>
    </widget>
   </widget>

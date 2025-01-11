@@ -6,17 +6,20 @@
 
 class CalendarTask {
 	public:
-        CalendarTask(QString inputName, QString inputDescription, QDateTime inputDateTimeBegin);
+        CalendarTask(int inputId, QString inputName, QString inputDescription, QDateTime inputDateTimeBegin);
 		~CalendarTask();
 		QString get_name();
 		QString get_description();
         QDateTime get_date_time_begin();
+        int get_id();
         bool get_is_task_completed();
 		void set_name(QString inputName);
 		void set_description(QString inputDescription);
         void set_date_time_begin(QDateTime inputDateTimeBegin);
         void set_is_task_completed(bool inputIsTaskCompleted);
+        void set_id(int inputId);
 	private:
+        int id;
 		//name of entity
 		QString name;
 		//description of entity

@@ -1,6 +1,7 @@
 #include "calendarEvent.h"
 
-CalendarEvent::CalendarEvent(QString inputName, QString inputDescription, QDateTime inputDateTimeBegin, QDateTime inputDateTimeEnd) {
+CalendarEvent::CalendarEvent(int inputId, QString inputName, QString inputDescription, QDateTime inputDateTimeBegin, QDateTime inputDateTimeEnd) {
+    id = inputId;
     name = inputName;
     description = inputDescription;
     dateTimeBegin = inputDateTimeBegin;
@@ -9,6 +10,9 @@ CalendarEvent::CalendarEvent(QString inputName, QString inputDescription, QDateT
 
 CalendarEvent::~CalendarEvent() {}
 
+int CalendarEvent::get_id() {
+    return id;
+}
 
 QString CalendarEvent::get_name() {
     return name;
@@ -40,4 +44,8 @@ void CalendarEvent::set_date_time_begin(QDateTime inputDateTimeBegin) {
 
 void CalendarEvent::set_date_time_end(QDateTime inputDateTimeEnd) {
     dateTimeEnd = inputDateTimeEnd;
+}
+
+void CalendarEvent::set_id(int inputId) {
+    id = inputId;
 }
