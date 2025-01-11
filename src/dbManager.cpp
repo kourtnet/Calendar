@@ -14,28 +14,31 @@ bool DbManager::db_exists() {
 }
 
 //returns "Success" if db opened successfully and some error text if db didnt open for some reason
-QString DbManager::db_create() {
-	QString res = QString(SUCCESS_QUERY_MESSAGE);
+bool DbManager::db_create(QString &err) {
 	//send error if couldnt open for some reason, else create tables
 	if (!db.open()) {
-		res = db.lastError().text();	
+        err = db.lastError().text();
+        return false;
 	} else {
 		QSqlQuery createTablesQuery = QSqlQuery(db);
 		//create tasks table
         if(!createTablesQuery.exec(CREATE_TASKS_TABLE_QUERY)) {
-            res = createTablesQuery.lastError().text();
+            err = createTablesQuery.lastError().text();
+            return false;
+        //create events table
         } else if (!createTablesQuery.exec(CREATE_EVENTS_TABLE_QUERY)) {
-            res = createTablesQuery.lastError().text();
+            err = createTablesQuery.lastError().text();
+            return false;
         }
 	}
-	return res;
+    return true;
 }
 
-QString DbManager::db_insert_tasks(QString name, QString description, QDateTime deadline) {
-	QString res = QString(SUCCESS_QUERY_MESSAGE);
+bool DbManager::db_insert_tasks(QString &err, QString name, QString description, QDateTime deadline) {
 	//send error if couldnt open for some reason, else insert into table
 	if (!db.open()) {
-		res = db.lastError().text();
+        err = db.lastError().text();
+        return false;
 	} else {
 		QSqlQuery insertTasksTableQuery = QSqlQuery(db);
 		insertTasksTableQuery.prepare(INSERT_TASKS_TABLE_QUERY);
@@ -46,18 +49,20 @@ QString DbManager::db_insert_tasks(QString name, QString description, QDateTime 
 		//2 is deadline column
 		insertTasksTableQuery.bindValue(2, deadline.toString("yyyy-MM-dd hh:mm:ss"));
 		//exec after binding parameters
-		bool ls = insertTasksTableQuery.exec();
-		//if ls is false, that means that values were not inserted, send error
-		if(!ls) res = insertTasksTableQuery.lastError().text();
+        //if ls is false, that means that values were not inserted, send error
+        if(!insertTasksTableQuery.exec()) {
+            err = insertTasksTableQuery.lastError().text();
+            return false;
+        }
 	}
-	return res;
+    return true;
 }
 
-QString DbManager::db_insert_events(QString name, QString description, QDateTime date_time_begin, QDateTime date_time_end) {
-	QString res = QString(SUCCESS_QUERY_MESSAGE);
+bool DbManager::db_insert_events(QString &err, QString name, QString description, QDateTime date_time_begin, QDateTime date_time_end) {
 	//send error if couldnt open for some reason, else insert into table
 	if (!db.open()) {
-		res = db.lastError().text();
+        err = db.lastError().text();
+        return false;
 	} else {
 		QSqlQuery insertEventsTableQuery = QSqlQuery(db);
 		insertEventsTableQuery.prepare(INSERT_EVENTS_TABLE_QUERY);
@@ -71,119 +76,139 @@ QString DbManager::db_insert_events(QString name, QString description, QDateTime
 		insertEventsTableQuery.bindValue(3, date_time_end.toString("yyyy-MM-dd hh:mm:ss"));
 		//exec after binding parameters
         if(!insertEventsTableQuery.exec()) {
-            res = insertEventsTableQuery.lastError().text();
+            err = insertEventsTableQuery.lastError().text();
+            return false;
         }
 	}
-	return res;
+    return true;
 }
 
-QString DbManager::db_delete_tasks(int id) {
-	QString res = QString(SUCCESS_QUERY_MESSAGE);
+bool DbManager::db_delete_tasks(QString &err, int id) {
 	//send error if couldnt open for some reason, else delete from table tasks
 	if(!db.open()) {
-		res = db.lastError().text();
+        err = db.lastError().text();
+        return false;
 	} else {
 		QSqlQuery deleteTasksTableQuery = QSqlQuery(db);
 		deleteTasksTableQuery.prepare(DELETE_TASKS_TABLE_QUERY);
 		deleteTasksTableQuery.bindValue(0, QString::number(id));
 
         if(!deleteTasksTableQuery.exec()) {
-            res = deleteTasksTableQuery.lastError().text();
+            err = deleteTasksTableQuery.lastError().text();
+            return false;
         }
 	}
-	return res;
+    return true;
 }
 
-QString DbManager::db_delete_events(int id) {
-	QString res = QString(SUCCESS_QUERY_MESSAGE);
+bool DbManager::db_delete_events(QString &err, int id) {
 	//send error if couldnt open for some reason, else delete from event tasks
 	if(!db.open()) {
-		res = db.lastError().text();
+        err = db.lastError().text();
+        return false;
 	} else {
 		QSqlQuery deleteEventsTableQuery = QSqlQuery(db);
 		deleteEventsTableQuery.prepare(DELETE_EVENTS_TABLE_QUERY);
 		deleteEventsTableQuery.bindValue(0, QString::number(id));
 		
         if(!deleteEventsTableQuery.exec()) {
-            res = deleteEventsTableQuery.lastError().text();
+            err = deleteEventsTableQuery.lastError().text();
+            return false;
         }
 	}
-	return res;
+    return true;
 }
 
-QString DbManager::db_update_tasks(int id, QString name, QString description, QDateTime deadline) {
-	QString res = QString(SUCCESS_QUERY_MESSAGE);
+bool DbManager::db_update_tasks(QString &err, int id, QString name, QString description, QDateTime deadline) {
 
 	if(!db.open()) {
-		res = db.lastError().text();
+        err = db.lastError().text();
+        return false;
 	} else {
 		QSqlQuery updateTasksTableQuery;
-		bool ls;
 		if(name != QString()) {
 			updateTasksTableQuery = QSqlQuery(db);
 			updateTasksTableQuery.prepare(UPDATE_NAME_TASKS_TABLE_QUERY);
 			updateTasksTableQuery.bindValue(0, name);
 			updateTasksTableQuery.bindValue(1, id);
-            ls = updateTasksTableQuery.exec();
+            if(!updateTasksTableQuery.exec()) {
+                err = updateTasksTableQuery.lastError().text();
+                return false;
+            }
 		}
-		if(description != QString() && ls) {
+        if(description != QString()) {
 			updateTasksTableQuery = QSqlQuery(db);
 			updateTasksTableQuery.prepare(UPDATE_DESCRIPTION_TASKS_TABLE_QUERY);
 			updateTasksTableQuery.bindValue(0, description);
 			updateTasksTableQuery.bindValue(1, id);
-			ls = updateTasksTableQuery.exec();
+            if(!updateTasksTableQuery.exec()) {
+                err = updateTasksTableQuery.lastError().text();
+                return false;
+            }
 		}
-		if(deadline != QDateTime() && ls) {
+        if(deadline != QDateTime()) {
 			updateTasksTableQuery = QSqlQuery(db);
 			updateTasksTableQuery.prepare(UPDATE_DEADLINE_TASKS_TABLE_QUERY);
 			updateTasksTableQuery.bindValue(0, deadline.toString("yyyy-MM-dd hh:mm:ss"));
 			updateTasksTableQuery.bindValue(1, id);
-			ls = updateTasksTableQuery.exec();
+            if(!updateTasksTableQuery.exec()) {
+                err = updateTasksTableQuery.lastError().text();
+                return false;
+            }
 		}
-		if(!ls) res = updateTasksTableQuery.lastError().text();
 	}
-	return res;
+    return true;
 }
 
-QString DbManager::db_update_events(int id, QString name, QString description, QDateTime date_time_begin, QDateTime date_time_end) {
-	QString res = QString(SUCCESS_QUERY_MESSAGE);
+bool DbManager::db_update_events(QString &err, int id, QString name, QString description, QDateTime date_time_begin, QDateTime date_time_end) {
 
 	if(!db.open()) {
-		res = db.lastError().text();
+        err = db.lastError().text();
+        return false;
 	} else {
 		QSqlQuery updateEventsTableQuery;
-		bool ls;
 		if(name != QString()) {
 			updateEventsTableQuery = QSqlQuery(db);
 			updateEventsTableQuery.prepare(UPDATE_NAME_EVENTS_TABLE_QUERY);
 			updateEventsTableQuery.bindValue(0, name);
 			updateEventsTableQuery.bindValue(1, id);
-			ls = updateEventsTableQuery.exec();
+            if(!updateEventsTableQuery.exec()) {
+                err = updateEventsTableQuery.lastError().text();
+                return false;
+            }
 		}
-		if(description != QString() && ls) {
+        if(description != QString()) {
 			updateEventsTableQuery = QSqlQuery(db);
 			updateEventsTableQuery.prepare(UPDATE_DESCRIPTION_EVENTS_TABLE_QUERY);
 			updateEventsTableQuery.bindValue(0, description);
 			updateEventsTableQuery.bindValue(1, id);
-			ls = updateEventsTableQuery.exec();
+            if(!updateEventsTableQuery.exec()) {
+                err = updateEventsTableQuery.lastError().text();
+                return false;
+            }
 		}
-		if(date_time_begin != QDateTime() && ls) {
+        if(date_time_begin != QDateTime()) {
 			updateEventsTableQuery = QSqlQuery(db);
 			updateEventsTableQuery.prepare(UPDATE_DATE_TIME_BEGIN_EVENTS_TABLE_QUERY);
 			updateEventsTableQuery.bindValue(0, date_time_begin.toString("yyyy-MM-dd hh:mm:ss"));
 			updateEventsTableQuery.bindValue(1, id);
-			ls = updateEventsTableQuery.exec();
+            if(!updateEventsTableQuery.exec()) {
+                err = updateEventsTableQuery.lastError().text();
+                return false;
+            }
 		}
-		if(date_time_end != QDateTime() && ls) {
+        if(date_time_end != QDateTime()) {
 			updateEventsTableQuery = QSqlQuery(db);
 			updateEventsTableQuery.prepare(UPDATE_DATE_TIME_END_EVENTS_TABLE_QUERY);
 			updateEventsTableQuery.bindValue(0, date_time_end.toString("yyyy-MM-dd hh:mm:ss"));
 			updateEventsTableQuery.bindValue(1, id);
-			ls = updateEventsTableQuery.exec();
+            if(!updateEventsTableQuery.exec()) {
+                err = updateEventsTableQuery.lastError().text();
+                return false;
+            }
 		}
-		if(!ls) res = updateEventsTableQuery.lastError().text();
 	}
-	return res;
+    return true;
 }
 
 

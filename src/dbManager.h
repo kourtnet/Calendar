@@ -30,16 +30,16 @@ class DbManager {
 		//check does database exist
 		bool db_exists();
 		//create all required tables
-		QString db_create();
+        bool db_create(QString &err);
 		//insert query methods
-		QString db_insert_tasks(QString name, QString description, QDateTime deadline);
-		QString db_insert_events(QString name, QString description, QDateTime timeBegin, QDateTime timeEnd);
+        bool db_insert_tasks(QString &err, QString name, QString description, QDateTime deadline);
+        bool db_insert_events(QString &err, QString name, QString description, QDateTime timeBegin, QDateTime timeEnd);
 		//delete query methods
-		QString db_delete_tasks(int id);
-		QString db_delete_events(int id);
+        bool db_delete_tasks(QString &err, int id);
+        bool db_delete_events(QString &err, int id);
 		//update query methods
-		QString db_update_tasks(int id, QString name = QString(), QString description = QString(), QDateTime deadline = QDateTime());
-		QString db_update_events(int id, QString name = QString(), QString description = QString(), QDateTime date_time_begin = QDateTime(), QDateTime date_time_end = QDateTime());
+        bool db_update_tasks(QString &err, int id, QString name = QString(), QString description = QString(), QDateTime deadline = QDateTime());
+        bool db_update_events(QString &err, int id, QString name = QString(), QString description = QString(), QDateTime date_time_begin = QDateTime(), QDateTime date_time_end = QDateTime());
 		
 		QString get_path();
 		void set_path(QString path);

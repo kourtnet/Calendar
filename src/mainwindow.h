@@ -4,15 +4,19 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QtSql>
-#include "calendarEvent.h"
+
 #include "dbManager.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(DbManager &inputDbMgr, QWidget *parent = nullptr);
     ~MainWindow();
+
+private:
+    DbManager dbMgr;
+    bool initiate_Db();
 };
 
 #endif // MAINWINDOW_H
