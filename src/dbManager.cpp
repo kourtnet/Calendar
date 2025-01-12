@@ -34,7 +34,7 @@ bool DbManager::db_create(QString &err) {
     return true;
 }
 
-bool DbManager::db_insert_tasks(QString &err, QString name, QString description, QDateTime begin) {
+bool DbManager::db_insert_tasks(QString &err, QString name, QString description, QDateTime dateTimeBegin, bool isCompleted) {
 	//send error if couldnt open for some reason, else insert into table
 	if (!db.open()) {
         err = db.lastError().text();
@@ -47,7 +47,9 @@ bool DbManager::db_insert_tasks(QString &err, QString name, QString description,
 		//1 is description column
 		insertTasksTableQuery.bindValue(1, description);
 		//2 is deadline column
-        insertTasksTableQuery.bindValue(2, begin.toString("yyyy-MM-dd hh:mm:ss"));
+        insertTasksTableQuery.bindValue(2, dateTimeBegin.toString("yyyy-MM-dd hh:mm:ss"));
+        //3 is iscompleted column
+        insertTasksTableQuery.bindValue(3, isCompleted);
 		//exec after binding parameters
         //if ls is false, that means that values were not inserted, send error
         if(!insertTasksTableQuery.exec()) {
@@ -58,7 +60,7 @@ bool DbManager::db_insert_tasks(QString &err, QString name, QString description,
     return true;
 }
 
-bool DbManager::db_insert_events(QString &err, QString name, QString description, QDateTime date_time_begin, QDateTime date_time_end) {
+bool DbManager::db_insert_events(QString &err, QString name, QString description, QDateTime dateTimeBegin, QDateTime dateTimeEnd) {
 	//send error if couldnt open for some reason, else insert into table
 	if (!db.open()) {
         err = db.lastError().text();
@@ -71,9 +73,9 @@ bool DbManager::db_insert_events(QString &err, QString name, QString description
 		//1 is description column
 		insertEventsTableQuery.bindValue(1, description);
 		//2 is date_time_begin column
-		insertEventsTableQuery.bindValue(2, date_time_begin.toString("yyyy-MM-dd hh:mm:ss"));
+        insertEventsTableQuery.bindValue(2, dateTimeBegin.toString("yyyy-MM-dd hh:mm:ss"));
         //3 is date_time_end column
-		insertEventsTableQuery.bindValue(3, date_time_end.toString("yyyy-MM-dd hh:mm:ss"));
+        insertEventsTableQuery.bindValue(3, dateTimeEnd.toString("yyyy-MM-dd hh:mm:ss"));
 		//exec after binding parameters
         if(!insertEventsTableQuery.exec()) {
             err = insertEventsTableQuery.lastError().text();
@@ -119,7 +121,7 @@ bool DbManager::db_delete_events(QString &err, int id) {
     return true;
 }
 
-bool DbManager::db_update_tasks(QString &err, int id, QString name, QString description, QDateTime deadline) {
+bool DbManager::db_update_tasks(QString &err, int id, QString name, QString description, QDateTime dateTimeBegin, int isCompleted) {
 
 	if(!db.open()) {
         err = db.lastError().text();
@@ -146,21 +148,31 @@ bool DbManager::db_update_tasks(QString &err, int id, QString name, QString desc
                 return false;
             }
 		}
-        if(deadline != QDateTime()) {
+        if(dateTimeBegin != QDateTime()) {
 			updateTasksTableQuery = QSqlQuery(db);
-			updateTasksTableQuery.prepare(UPDATE_DEADLINE_TASKS_TABLE_QUERY);
-			updateTasksTableQuery.bindValue(0, deadline.toString("yyyy-MM-dd hh:mm:ss"));
+            updateTasksTableQuery.prepare(UPDATE_DATE_TIME_BEGIN_TASKS_TABLE_QUERY);
+            updateTasksTableQuery.bindValue(0, dateTimeBegin.toString("yyyy-MM-dd hh:mm:ss"));
 			updateTasksTableQuery.bindValue(1, id);
             if(!updateTasksTableQuery.exec()) {
                 err = updateTasksTableQuery.lastError().text();
                 return false;
             }
 		}
+        if(isCompleted > -1 && isCompleted < 2) {
+            updateTasksTableQuery = QSqlQuery(db);
+            updateTasksTableQuery.prepare(UPDATE_IS_COMPLETED_TASKS_TABLE_QUERY);
+            updateTasksTableQuery.bindValue(0, isCompleted);
+            updateTasksTableQuery.bindValue(1, id);
+            if(!updateTasksTableQuery.exec()) {
+                err = updateTasksTableQuery.lastError().text();
+                return false;
+            }
+        }
 	}
     return true;
 }
 
-bool DbManager::db_update_events(QString &err, int id, QString name, QString description, QDateTime date_time_begin, QDateTime date_time_end) {
+bool DbManager::db_update_events(QString &err, int id, QString name, QString description, QDateTime dateTimeBegin, QDateTime dateTimeEnd) {
 
 	if(!db.open()) {
         err = db.lastError().text();
@@ -187,20 +199,20 @@ bool DbManager::db_update_events(QString &err, int id, QString name, QString des
                 return false;
             }
 		}
-        if(date_time_begin != QDateTime()) {
+        if(dateTimeBegin != QDateTime()) {
 			updateEventsTableQuery = QSqlQuery(db);
 			updateEventsTableQuery.prepare(UPDATE_DATE_TIME_BEGIN_EVENTS_TABLE_QUERY);
-			updateEventsTableQuery.bindValue(0, date_time_begin.toString("yyyy-MM-dd hh:mm:ss"));
+            updateEventsTableQuery.bindValue(0, dateTimeBegin.toString("yyyy-MM-dd hh:mm:ss"));
 			updateEventsTableQuery.bindValue(1, id);
             if(!updateEventsTableQuery.exec()) {
                 err = updateEventsTableQuery.lastError().text();
                 return false;
             }
 		}
-        if(date_time_end != QDateTime()) {
+        if(dateTimeEnd != QDateTime()) {
 			updateEventsTableQuery = QSqlQuery(db);
 			updateEventsTableQuery.prepare(UPDATE_DATE_TIME_END_EVENTS_TABLE_QUERY);
-			updateEventsTableQuery.bindValue(0, date_time_end.toString("yyyy-MM-dd hh:mm:ss"));
+            updateEventsTableQuery.bindValue(0, dateTimeEnd.toString("yyyy-MM-dd hh:mm:ss"));
 			updateEventsTableQuery.bindValue(1, id);
             if(!updateEventsTableQuery.exec()) {
                 err = updateEventsTableQuery.lastError().text();

@@ -17,10 +17,8 @@ set(PROJECT_SOURCES
         src/mainwindow.cpp
         src/mainwindow.h
        	src/mainwindow.ui
-        src/calendarEvent.cpp
-        src/calendarEvent.h
-        src/calendarTask.cpp
-        src/calendarTask.h
+        src/calendarEntity.cpp
+        src/calendarEntity.h
         src/dbManager.cpp
         src/dbManager.h
 )
